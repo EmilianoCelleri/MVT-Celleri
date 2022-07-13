@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+</head>
+<body>
+    
+    <h1>Resultados de la busqueda</h1>
+    
+    {% if vecinos %}    
+<ul>
+    {% for vecino in vecinos %}
+    <li><p>{{vecino.nombre}} </p></li>
+    <p>{{vecino.direccion}}</p>
+    <br>
+
+    {% endfor %}
+</ul>
+    {% else %}
+    <p>No hay vecinos con ese nombre</p>
+    {% endif %}
+</ul>
+</body>
+</html>

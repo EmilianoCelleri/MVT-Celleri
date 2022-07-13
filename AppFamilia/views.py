@@ -1,25 +1,87 @@
 from django.http import HttpResponse
-from AppFamilia.models import Familia
+from AppFamilia.models import Familia, Mascotas, Vecinos
 from django.template import Context, Template, loader
 from django.shortcuts import render
+from AppFamilia.forms import FamiliaForm,VecinosForm, MascotasForm
 # Create your views here.
 
-def familia(self):
-    
-    familiar1 = Familia(nombre="Emiliano", apellido='Celleri', edad= 28, fecha_de_nacimiento = '1993-10-19')
-    familiar1.save()
-    familiar2 = Familia(nombre="Micaela", apellido='Celleri', edad= 30, fecha_de_nacimiento = '1991-07-11')
-    familiar2.save()
-    familiar3 = Familia(nombre="Julian", apellido='Celleri', edad= 20, fecha_de_nacimiento = '2002-12-05')
-    familiar3.save()
-    texto= f"Familiar Creado. nombre y apellido: {familiar1.nombre} {familiar1.apellido} edad: {familiar1.edad} fecha de nacimiento: {familiar1.fecha_de_nacimiento} <br/> Familiar Creado. nombre y apellido: {familiar2.nombre} {familiar2.apellido} edad: {familiar2.edad} fecha de nacimiento: {familiar2.fecha_de_nacimiento} <br/>Familiar Creado. nombre y apellido: {familiar3.nombre} {familiar3.apellido} edad: {familiar3.edad} fecha de nacimiento: {familiar3.fecha_de_nacimiento}" 
-    return HttpResponse(texto)
-    
-
 def inicio(request):
-    plantilla=loader.get_template('inicio.html')   #Leemos el archivo y lo guardamos en una variable
+    plantilla=loader.get_template('AppFamilia/inicio.html')   #Leemos el archivo y lo guardamos en una variable
 
 
     documento=plantilla.render()
 
     return HttpResponse(documento)
+
+
+def familiarForm(request):
+
+    if request.method=='POST':
+        form=FamiliaForm(request.POST)
+        
+        if form.is_valid():
+            info=form.cleaned_data
+            
+            nombre=info["nombre"]
+            apellido=info["apellido"]
+            edad=info["edad"]
+            fecha_de_nacimiento=info["fecha_de_nacimiento"]
+
+            familiar=Familia(nombre=nombre, apellido=apellido, edad= edad, fecha_de_nacimiento= fecha_de_nacimiento)
+            familiar.save()
+            return render (request, "Appfamilia/inicio.html")    
+    else:
+        form=FamiliaForm()
+    return render (request, "Appfamilia/familiarForm.html", {"formulario": form})
+
+
+def mascotaForm(request):
+
+    if (request.method=="POST"):
+        form=MascotasForm(request.POST)
+        
+        if form.is_valid():
+            info=form.cleaned_data
+            
+            apodo=info["apodo"]
+            raza=info["raza"]
+            edad=info["edad"]
+        
+            mascota=Mascotas(apodo=apodo, raza=raza, edad= edad)
+            mascota.save()
+            return render (request, "AppFamilia/inicio.html")    
+    else:
+        form=MascotasForm()
+    return render (request, "AppFamilia/mascotaForm.html", {"formulario": form})
+
+
+def vecinoForm(request):
+
+    if (request.method=="POST"):
+        form=VecinosForm(request.POST)
+        
+        if form.is_valid():
+            info=form.cleaned_data
+            
+            nombre=info["nombre"]
+            direccion=info["direccion"]
+        
+            vecino=Vecinos(nombre=nombre, direccion=direccion)
+            vecino.save()
+            return render (request, "AppFamilia/inicio.html")    
+    else:
+        form=VecinosForm()
+    return render (request, "AppFamilia/vecinoForm.html", {"formulario": form})
+
+
+
+def busquedaVecino(request):
+    return render (request, "Appfamilia/busquedaVecino.html")
+
+def buscar(request):
+    if request.GET["nombre"]:
+        nom=request.GET["nombre"]
+        vecinos=Vecinos.objects.filter(nombre=nom)
+        return render (request, "Appfamilia/resultadosBusqueda.html", {"vecinos":vecinos})
+    else:
+        return render(request, "Appfamilia/busquedaVecino.html", {"error": "No se ingreso ningun nombre" })
