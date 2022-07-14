@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import *
 urlpatterns = [
-    path('', inicio),
+    path('', inicio, name="inicio"),
     path('familiarForm/', familiarForm, name= "familiarForm"),
     path('mascotaForm/', mascotaForm, name= "mascotaForm"),
     path('vecinoForm/', vecinoForm, name= "vecinoForm"),

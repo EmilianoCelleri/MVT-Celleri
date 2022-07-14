@@ -6,7 +6,7 @@ from AppFamilia.forms import FamiliaForm,VecinosForm, MascotasForm
 # Create your views here.
 
 def inicio(request):
-    plantilla=loader.get_template('AppFamilia/inicio.html')   #Leemos el archivo y lo guardamos en una variable
+    plantilla=loader.get_template('AppFamilia/index.html')   #Leemos el archivo y lo guardamos en una variable
 
 
     documento=plantilla.render()
@@ -29,7 +29,7 @@ def familiarForm(request):
 
             familiar=Familia(nombre=nombre, apellido=apellido, edad= edad, fecha_de_nacimiento= fecha_de_nacimiento)
             familiar.save()
-            return render (request, "Appfamilia/inicio.html")    
+            return render (request, "Appfamilia/index.html")    
     else:
         form=FamiliaForm()
     return render (request, "Appfamilia/familiarForm.html", {"formulario": form})
@@ -49,7 +49,7 @@ def mascotaForm(request):
         
             mascota=Mascotas(apodo=apodo, raza=raza, edad= edad)
             mascota.save()
-            return render (request, "AppFamilia/inicio.html")    
+            return render (request, "AppFamilia/index.html")    
     else:
         form=MascotasForm()
     return render (request, "AppFamilia/mascotaForm.html", {"formulario": form})
@@ -68,7 +68,7 @@ def vecinoForm(request):
         
             vecino=Vecinos(nombre=nombre, direccion=direccion)
             vecino.save()
-            return render (request, "AppFamilia/inicio.html")    
+            return render (request, "AppFamilia/index.html")    
     else:
         form=VecinosForm()
     return render (request, "AppFamilia/vecinoForm.html", {"formulario": form})
@@ -81,7 +81,7 @@ def busquedaVecino(request):
 def buscar(request):
     if request.GET["nombre"]:
         nom=request.GET["nombre"]
-        vecinos=Vecinos.objects.filter(nombre=nom)
+        vecinos=Vecinos.objects.filter(nombre__icontains=nom)
         return render (request, "Appfamilia/resultadosBusqueda.html", {"vecinos":vecinos})
     else:
         return render(request, "Appfamilia/busquedaVecino.html", {"error": "No se ingreso ningun nombre" })
